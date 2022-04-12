@@ -1,0 +1,94 @@
+### General
+########
+# [retry]
+#debug = true
+logLevel = "ERROR"
+defaultEntryPoints = ["http","https"]
+### ENDOF
+
+### Extra Rules
+########
+[file]
+
+[backends]
+ [backends.gitlab_pages]
+   [backends.gitlab_pages.servers.s1]
+   url = "https://candoizo.gitlab.io/"
+ [backends.gitlab]
+   [backends.gitlab.servers.s1]
+   url = "https://gitlab.com/"
+
+[frontends]
+ [frontends.docs]
+  backend = "gitlab_pages"
+  passHostHeader = false
+   [frontends.docs.routes.r1]
+    rule = "Host:docs.ndoizo.ca; AddPrefix:/docs/;"
+ [frontends.repo]
+  backend = "gitlab_pages"
+  passHostHeader = false
+   [frontends.repo.routes.r1]
+   rule = "Host:www.ndoizo.ca; AddPrefix:/repo/;"
+ [frontends.blog]
+  backend = "gitlab_pages"
+  passHostHeader = false
+   [frontends.blog.routes.r1]
+   rule = "Host:blog.ndoizo.ca; AddPrefix:/blog/;"
+
+
+ [frontends.git]
+  backend = "gitlab"
+  passHostHeader = false
+   [frontends.git.routes.r1]
+    rule = "Host:git.ndoizo.ca; AddPrefix:/candoizo/;"
+
+
+#########################
+### ENDOFs
+
+
+### Docker
+########
+[docker]
+domain = "ndoizo.ca"
+network = "proxy"
+watch = true
+endpoint = "unix:///var/run/docker.sock"
+#########################
+### ENDOF
+
+[api]
+entrypoint="dashboard"
+
+[entryPoints]
+[entryPoints.dashboard]
+address = ":8080"
+[entryPoints.dashboard.auth]
+[entryPoints.dashboard.auth.basic]
+users = []
+
+
+[entryPoints.http]
+address = ":80"
+[entryPoints.http.redirect]
+entryPoint = "https"
+
+
+[entryPoints.https]
+address = ":443"
+[entryPoints.https.tls]
+#########################
+### ENDOF
+
+### ACME
+########
+[acme]
+email = "candoizo@pm.me"
+storage = "acme.json"
+entryPoint = "https"
+onHostRule = true
+onDemand = false
+[acme.httpChallenge]
+entryPoint = "http"
+#########################
+###

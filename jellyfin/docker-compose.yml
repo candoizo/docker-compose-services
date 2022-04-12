@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    labels:
+      - traefik.frontend.rule=Host:watch.docker.local
+      - traefik.port=8096
+      - traefik.frontend.entryPoints=https
+      - traefik.frontend.headers.forceSTSHeader=true
+      - traefik.frontend.headers.STSSeconds=315360000
+      - traefik.frontend.headers.STSIncludeSubdomains=true
+      - traefik.frontend.headers.STSPreload=true
+    expose:
+      - 8096
+    volumes:
+      - /root/jellyfin/share:/share:rw
+      - /root/jellyfin/conf:/config:rw
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - APP_UID=0
+      - APP_GID=0
+      - GIDLIST=0 #A comma-separated list of additional GIDs to run emby as (default 2)#
+      - TZ=
+    networks:
+      - proxy
+
+networks:
+  proxy:
+   external: true

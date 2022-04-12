@@ -1,0 +1,25 @@
+version: "3"
+services:
+  jackett:
+    image: linuxserver/jackett
+    container_name: jackett
+    restart: unless-stopped
+    labels:
+     - traefik.frontend.rule=Host:jackett.docker.local
+     - traefik.protocol=http
+     - traefik.port=9117
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=
+    volumes:
+      - /root/jackett/config:/config
+      - /root/transmission/downloads:/downloads
+    expose:
+      - 9117
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

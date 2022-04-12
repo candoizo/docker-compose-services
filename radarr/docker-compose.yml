@@ -1,0 +1,26 @@
+version: "2"
+services:
+  radarr:
+    image: linuxserver/radarr
+    container_name: radarr
+    restart: unless-stopped
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=
+    volumes:
+      - /root/radarr/config:/config
+      - /root/sonarr/movies:/movies
+      - /root/transmission/downloads:/downloads
+    labels:
+      - traefik.frontend.headers.SSLRedirect=false
+      - traefik.frontend.rule=Host:radarr.docker.local
+      - traefik.port=7878
+    expose:
+      - 7878
+    networks:
+      - web
+      
+networks:
+  web:
+    external: true

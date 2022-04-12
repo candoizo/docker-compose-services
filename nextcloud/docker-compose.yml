@@ -1,0 +1,25 @@
+version: "2"
+services:
+  nextcloud:
+    image: nextcloud
+    container_name: nextcloud
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:cloud.docker.local
+      - traefik.port=80
+      - traefik.protocol=http
+      #      - traefik.frontend.auth.forward.tls.caOptional=true
+      #      - traefik.frontend.auth.forward.tls.insecureSkipVerify=true
+#      - traefik.frontend.headers.SSLRedirect=false
+    volumes:
+      - ./nextcloud/config:/config
+      - ./nextcloud/data:/data
+    expose:
+      - 8080
+    networks:
+     - proxy
+
+networks:
+ proxy:
+  external: true

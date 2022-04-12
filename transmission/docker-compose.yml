@@ -1,0 +1,30 @@
+version: '2'
+services:
+  transmission:
+    image: linuxserver/transmission
+    container_name: transmission
+    restart: unless-stopped
+    labels:
+      - traefik.frontend.rule=Host:dl.docker.local
+      - traefik.port=9091
+      - traefik.protocol=http
+    environment:
+      - PUID=1000
+      - PGID=970
+      - TZ=
+      - TRANSMISSION_WEB_HOME=/combustion-release/
+    volumes:
+      - ./transmission/config:/config
+      - ./transmission/downloads:/downloads
+      - ./transmission/watch:/watch
+      - ./vpn.ovpn:/tmp/vpn.ovpn
+    expose:
+      - 9091/tcp
+      - 51413/tcp
+      - 51413/udp
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

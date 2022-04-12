@@ -1,0 +1,26 @@
+version: "2"
+services:
+  sonarr:
+    image: linuxserver/sonarr
+    container_name: sonarr
+    restart: unless-stopped
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=
+    volumes:
+      - ./sonarr/config:/config
+      - ./sonarr/tv:/tv
+      - ./transmission/downloads:/downloads
+    labels:
+      - traefik.frontend.headers.SSLRedirect=false
+      - traefik.frontend.rule=Host:sonarr.docker.local
+      - traefik.port=8989
+    expose:
+      - 8989
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

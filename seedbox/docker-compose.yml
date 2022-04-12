@@ -1,0 +1,29 @@
+version: '2'
+services:
+  seedbox:
+    container_name: seedbox
+    image: archlinux/base
+    restart: unless-stopped
+    privileged: true
+    dns: 1.1.1.1
+    cap_add:
+      - NET_ADMIN
+    expose:
+      - 1194/all
+      - 1195/all
+      - 1197all
+      - 9091/tcp
+    labels:
+      - traefik.port=9091
+      - traefik.protocol=http
+      - traefik.frontend.rule=Host:tvpn.docker.local
+    volumes:
+      - ./vpn.ovpn:/torrent/vpn.ovpn
+      - ./torrent/dl/:/torrent/dl/
+      - ./torrent/watch/:/torrent/watch/
+      - ./torrent/complete/:/torrent/complete/
+    # networks:
+    #   - proxy
+# networks:
+#   proxy:
+#      external: true
